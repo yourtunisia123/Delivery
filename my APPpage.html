@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>QR Code Reader</title>
+  <script src="https://cdn.jsdelivr.net/npm/@zxing/library@0.0.13"></script>
+</head>
+<body>
+  <video id="preview" style="width:300px;height:300px;"></video>
+  <script>
+    const codeReader = new ZXing.BrowserQRCodeReader();
+    codeReader
+      .decodeOnceFromVideoDevice(undefined, 'preview')
+      .then((result) => {
+        const url = result.text;
+        const [sheetId, cell] = url.split('/').slice(-2); // Assuming the QR code contains a URL like "https://example.com/sheetId/cell"
+        const value = prompt('Enter the new value:'); // Prompt the user to enter the new value
+        if (value !== null) {
+          fetch(`https://script.google.com/macros/s/AKfycbxmkmIC39BabyWMD7PeW4gCRxwhrgoco_YwbH5JpTeyaBgUSV_aScHTLNdRNkYg6QW1/exec?sheetId=${sheetId}&cell=${cell}&value=${value}`)
+            .then(response => {
+              // Handle response
+            })
+            .catch(error => {
+              console.error('Error:', error);
+            });
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  </script>
+</body>
+</html>
